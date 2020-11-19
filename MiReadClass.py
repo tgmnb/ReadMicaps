@@ -176,6 +176,7 @@ class Eqpt(MicapsOp):
         self.data=Eqpt1.predata*(1000/self.p-self.e)
         np.power(self.data,0.286)
         Eqpt1.data=self.data*nameless2
+        self.data=Eqpt1.data
         #Eqpt1.predata=pd.read_csv('')
         #Eqpt1.predata=Eqpt1.fillna(0)
         
