@@ -13,6 +13,7 @@ from mpl_toolkits.basemap import Basemap
 import math
 import pandas as pd
 
+
 # Creating the class
 class MicapsOp:
     
@@ -47,7 +48,7 @@ class MicapsOp:
                  levels=np.arange(self.start_level,self.end_level+self.lineint,self.lineint),colors='r',zorder=1)
         ax.clabel(c1, fmt='%d', inline=True, fontsize=12, inline_spacing=8)
             
-        m.readshapefile('D:\\Chrome download\\国界\\国界\\country1', 'province',color='k',linewidth=0.6,zorder=0)
+        m.readshapefile('D:\\shp\\国界\\国界\\country1', 'province',color='k',linewidth=0.6,zorder=0)
             
         plt.title('%s      Level:%d'%(self.file_time.strftime('%Y-%m-%d %H:%M'),self.level),size=14, loc='left')
         plt.savefig(self.ofile+self.file+'.png',dpi=300,bbox_inches='tight')
@@ -172,8 +173,9 @@ class Eqpt(MicapsOp):
         #        (0.24*(273.16+Eqpt1.predata-(Eqpt2.predata)))+math.log(Eqpt1.predata/(Eqpt1.predata-(Eqpt2.predata))))
         self.e=6.1078*nameless1
         self.q=0.622*self.e/(self.p-0.378*self.e)
-        Eqpt1.data=(Eqpt1.predata*(1000/self.p-self.e)**0.286)*nameless2
-        
+        self.data=Eqpt1.predata*(1000/self.p-self.e)
+        np.power(self.data,0.286)
+        Eqpt1.data=self.data*nameless2
         #Eqpt1.predata=pd.read_csv('')
         #Eqpt1.predata=Eqpt1.fillna(0)
         
