@@ -46,7 +46,7 @@ class MicapsOp:
         x, y = m(lons, lats)
         c1=m.contour(x,y,sn.zoom(self.data, self.factor),
                  levels=np.arange(self.start_level,self.end_level+self.lineint,self.lineint),colors='r',zorder=1)
-        ax.clabel(c1, fmt='%d', inline=True, fontsize=12, inline_spacing=8)
+        ax.clabel(c1, fmt='%d', inline= True, fontsize=12, inline_spacing=8)
             
         m.readshapefile('D:\\shp\\国界\\国界\\country1', 'province',color='k',linewidth=0.6,zorder=0)
             
@@ -142,12 +142,15 @@ class MiR11(MicapsOp):
         MiR11.PreData(self)
        '''
 class Eqpt(MicapsOp):
+    r=range(-1000,100,100)
+    
     def __init__(self,file,ofile,p,t,td):
         self.file=file
         self.ofile=ofile
         self.p=p
         self.t=t
         self.td=td
+        
         
     def Culw(self):
         Eqpt1=MiR4(self.t,self.file,self.ofile,"t") 
@@ -175,15 +178,30 @@ class Eqpt(MicapsOp):
         self.q=0.622*self.e/(self.p-0.378*self.e)
         self.data=Eqpt1.predata*(1000/self.p-self.e)
         np.power(self.data,0.286)
-        Eqpt1.data=self.data*nameless2
-        self.data=Eqpt1.data
-        #Eqpt1.predata=pd.read_csv('')
-        #Eqpt1.predata=Eqpt1.fillna(0)
+        self.data=self.data*nameless2
+        self.OutPutContour(Eqpt1,self.r)
         
-        MicapsOp.DrawContour(Eqpt1)
-    def OutPutContour(self):
-        Eqpt.Culw(self)
-        #MicapsOp.DrawContour(self)
+    def OutPutContour(self,e,r):
+        
+        fig,ax = plt.subplots(figsize=(14,9))
+    
+        m = Basemap(projection='cyl',
+                llcrnrlat=e.end_lat, urcrnrlat=e.start_lat,
+                llcrnrlon=e.start_lon, urcrnrlon=e.end_lon,
+                resolution='l')
+        m.drawcoastlines(linewidth=0.8, color='black')
+    
+        lon=np.linspace(e.start_lon,e.end_lon,e.xsize)
+        lat=np.linspace(e.end_lat,e.start_lat,e.ysize)[::-1]               
+        lons, lats = np.meshgrid(sn.zoom(lon, e.factor), sn.zoom(lat, e.factor))
+        x, y = m(lons, lats)
+        c1=m.contour(x,y,sn.zoom(self.data, e.factor),r,colors='r',zorder=1)
+        ax.clabel(c1, fmt='%d', inline= True, fontsize=12, inline_spacing=8)
+            
+        m.readshapefile('D:\\shp\\国界\\国界\\country1', 'province',color='k',linewidth=0.6,zorder=0)
+            
+        plt.title('%s      Level:%d'%(e.file_time.strftime('%Y-%m-%d %H:%M'),e.level),size=14, loc='left')
+        plt.savefig(self.ofile+self.file+'.png',dpi=300,bbox_inches='tight')
         
 '''      
 class Vert(MicapsOp):
