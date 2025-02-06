@@ -1,4 +1,2 @@
 # ReadMicaps
-zz
-zzz
-123
+micaps二进制数据读取器
